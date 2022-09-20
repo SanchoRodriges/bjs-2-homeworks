@@ -21,26 +21,27 @@ function cachingDecoratorNew(func) {
 function debounceDecoratorNew(func, delay){
 
   let timeoutId = null;
-  func.count = 0;
-  func.allCount = 0;
+  wrapper.count = 0;
+  wrapper.allCount = 0;
+  function wrapper(...args) {
 
-  return function(...args) {
-    
-    func.allCount++;
-    
-    if (!func.allCount) {
+    if (!wrapper.allCount) {
       func(...args);
-      func.count++;
-    }    
+      wrapper.count++;
+    }
+
+    wrapper.allCount++;
     
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
     
-      timeoutId = setTimeout(() => {
+    timeoutId = setTimeout(() => {
       timeoutId = null;
       func(...args);
-      func.count++;
+      wrapper.count++;
     }, delay);
   }
+
+  return wrapper;
 }
